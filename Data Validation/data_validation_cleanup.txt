@@ -1,0 +1,13 @@
+beeline: 
+use arupal;
+//Select command shows the vin, body type, make name, maximum seating, wheel system and price from the US used cars dataset
+select vin, body_type, make_name, maximum_seating, wheel_system, price from used_cars LIMIT 10;
+SELECT count(*) from used_cars;
+
+
+
+beeline
+arupal;
+
+
+

@@ -1,0 +1,80 @@
+beeline
+use arupal;
+
+// Effect of car engine size on fuel economy ordered by average of fuel economy
+select engine_type AS car_engine_type, ceil(AVG(city_fuel_economy)) AS avg_fuel_economy from used_cars group by engine_type Order By avg(city_fuel_economy) DESC LIMIT 10;
+
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select engine_type AS car_engine_type, ceil(AVG(city_fuel_economy)) AS avg_fuel_economy from used_cars group by engine_type Order By avg(city_fuel_economy) DESC LIMIT 10;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+// Number of cars sold based on the car type ordered by number of cars sold 
+select body_type AS car_type, count(vin) AS number_of_cars_sold from used_cars group by body_type order by count(vin) desc limit 5;
+
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select body_type AS car_type, count(vin) AS number_of_cars_sold from used_cars group by body_type order by count(vin) desc limit 5;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+// Number of cars sold based on the car model ordered by number of cars sold 
+select CONCAT(make_name, " ", model_name) cars_model, count(vin) AS number_of_cars_sold from used_cars group by CONCAT(make_name, " ", model_name) order by count(vin) desc limit 20;
+
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select CONCAT(make_name, " ", model_name) AS cars_model, count(vin) AS number_of_cars_sold from used_cars group by CONCAT(make_name, " ", model_name) order by count(vin) desc limit 20;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+// Number of cars sold and the average price of the car for different vehicle-year for Ford F – 150 ordered by number of cars sold
+select vehicle_year, count(vin) AS number_of_cars_sold, ceil(avg(price)) AS average_price from used_cars where CONCAT(make_name, " ", model_name) = 'Ford F-150'  group by vehicle_year order by vehicle_year desc limit 20;
+
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select vehicle_year, count(vin) AS number_of_cars_sold, ceil(avg(price)) AS average_price from used_cars where CONCAT(make_name, " ", model_name) = 'Ford F-150'  group by vehicle_year order by vehicle_year desc limit 20;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+// Distribution of used cars sales across different cities in the US ordered by number of cars sold 
+select city As city, count(vin) AS no_of_cars_sold from used_cars group by city order by count(vin) desc LIMIT 10;
+
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select city As city, count(vin) AS no_of_cars_sold from used_cars group by city order by count(vin) desc LIMIT 10;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+// Geospatial (1)
+
+select city As city, count(vin) AS no_of_cars_sold from used_cars group by city order by count(vin) desc LIMIT 10;
+
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' select city As city, count(vin) AS no_of_cars_sold from used_cars group by city order by count(vin) desc LIMIT 10;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+// Geospatial (2)
+INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','   SELECT used_car_plot.city AS city, avg(used_car_plot.latitude) AS avg_latitude, avg(used_car_plot.longitude) AS avg_longitude,  used_car_plot.price_range AS price_range, count(*) AS num_of_cars FROM (SELECT IF(price<=20000,"Less than $20000",IF((price>20000 AND price<=40000),"$20000 to $40000",IF((price>40000 AND price<=100000),"$40000 to $100000", "More than $100000"))) AS price_range, city, latitude, longitude  FROM used_cars) used_car_plot group by used_car_plot.city, used_car_plot.price_range;
+
+hdfs dfs -ls data
+hdfs dfs -get data/000000_0
+sftp> get 000000_0 Desktop
+rm 000000_0
+hdfs dfs -rm data/000000_0
+
+
