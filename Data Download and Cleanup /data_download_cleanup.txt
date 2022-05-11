@@ -1,0 +1,21 @@
+//Split the files: 
+split -l 100000 usedcarsdata1.csv
+//Code to upload data to HDFS (Ran the below commands to transfer 30 files //(usedcarsdata1.csv – usedcarsdata30.csv) from personal computer to HDFS 
+
+//make directory in linux
+hdfs dfs -mkdir used_cars
+hdfs dfs -ls 
+//upload file to linux
+sftp> put usedcarsdata1.csv 
+ls
+//transfer file to hdfs
+hdfs dfs -put usedcarsdata1.csv used_cars
+
+beeline
+//Create table on Beeline
+
+CREATE EXTERNAL TABLE IF NOT EXISTS used_cars (vin VARCHAR(128), back_legroom DECIMAL(6,1), bed VARCHAR(32), bed_height STRING, bed_length DECIMAL(6,1), body_type VARCHAR(64), cabin STRING, city VARCHAR(64), city_fuel_economy INTEGER, combine_fuel_economy STRING, daysonmarket INTEGER, dealer_zip INTEGER, description String, engine_cylinders VARCHAR(8), engine_displacement INTEGER, engine_type VARCHAR(8), exterior_color VARCHAR(16), fleet VARCHAR(16), frame_damaged VARCHAR(16), franchise_dealer BOOLEAN, franchise_make VARCHAR(16), front_legroom DECIMAL(5,2), fuel_tank_volume DECIMAL(5,3), fuel_type VARCHAR(16), has_accidents BOOLEAN, height DECIMAL(7,2), highway_fuel_economy INTEGER, horsepower INTEGER, interior_color VARCHAR(16), isCAB BOOLEAN, is_certified BOOLEAN, is_cpo BOOLEAN, is_new BOOLEAN, is_oemcpo BOOLEAN, latitude DECIMAL(8,5), body_length DECIMAL(3,2), listed_date DATE, listing_color VARCHAR(16), listing_id DECIMAL, longitude DECIMAL(9,5), main_picture_url STRING, major_options STRING, make_name VARCHAR(16), maximum_seating INTEGER, mileage INTEGER, model_name STRING, owner_count INTEGER, power STRING, price INTEGER, salvage BOOLEAN, savings_amount INTEGER, seller_rating DECIMAL(11,9), sp_id INTEGER, sp_name VARCHAR(16), theft_title BOOLEAN, torque STRING, transmission VARCHAR(2), transmission_display STRING, trimId STRING, trim_name VARCHAR(16), vehicle_damage_category STRING, wheel_system VARCHAR(16), wheel_system_display VARCHAR(16), wheelbase DECIMAL(6,3), width DECIMAL(3,1), vehicle_year STRING) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/user/arupal/used_cars' TBLPROPERTIES ('skip.header.line.count'='3');
+
+
+//Validate the data count 
+Beeline> select count(*) from used_cars;
