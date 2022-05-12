@@ -56,7 +56,7 @@ sftp> get 000000_0 Desktop
 rm 000000_0
 hdfs dfs -rm data/000000_0
 
-// Geospatial (1)
+// Geospatial visualization (1)
 
 select city As city, count(vin) AS no_of_cars_sold from used_cars group by city order by count(vin) desc LIMIT 10;
 
@@ -68,7 +68,7 @@ sftp> get 000000_0 Desktop
 rm 000000_0
 hdfs dfs -rm data/000000_0
 
-// Geospatial (2)
+// Geospatial visualization (2 & 3)
 INSERT OVERWRITE DIRECTORY '/user/arupal/data/' ROW FORMAT DELIMITED FIELDS TERMINATED BY ','   SELECT used_car_plot.city AS city, avg(used_car_plot.latitude) AS avg_latitude, avg(used_car_plot.longitude) AS avg_longitude,  used_car_plot.price_range AS price_range, count(*) AS num_of_cars FROM (SELECT IF(price<=20000,"Less than $20000",IF((price>20000 AND price<=40000),"$20000 to $40000",IF((price>40000 AND price<=100000),"$40000 to $100000", "More than $100000"))) AS price_range, city, latitude, longitude  FROM used_cars) used_car_plot group by used_car_plot.city, used_car_plot.price_range;
 
 hdfs dfs -ls data

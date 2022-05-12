@@ -15,6 +15,12 @@ INSERT OVERWRITE DIRECTORY '/user/arupal/used_cars_analysis/' ROW FORMAT DELIMIT
 // Create Analysis Table
 CREATE EXTERNAL TABLE IF NOT EXISTS used_cars_analysis (price DECIMAL(12,2), car_model VARCHAR(64), has_accident BOOLEAN, number_of_owners INTEGER, days_on_market VARCHAR(64), vehicle_year STRING, mileage VARCHAR(64), number_of_rows INTEGER) ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' STORED AS TEXTFILE LOCATION '/user/arupal/used_cars_analysis';
 
+// Check if the table has been created
+show tables;
+
+// Validate the table columns 
+select * from used_cars_analysis LIMIT 5; 
+
 // Analysis of factors affecting used car prices (No of owners) - Effect of number of owners on used car price keeping all other factors constant (car model, has accident, mileage, days on market and vehicle year)
 select ceil(avg(price)) AS average_car_price, number_of_owners AS no_of_owners from used_cars_analysis where car_model = "Ford F-150" AND has_accident = FALSE AND mileage = "Less than 10000 miles" AND days_on_market = "0-30 days" AND vehicle_year = "5-10 years" group by number_of_owners ORDER BY avg(price);
 
